@@ -3,7 +3,7 @@
 
 #define LOADCELL_DOUT_PIN  13
 #define LOADCELL_SCK_PIN  12
-#define CALIBRATION_FACTOR 393.2f
+#define CALIBRATION_FACTOR 417.5f
 
 Scale::Scale() {
     this->scale.begin(

@@ -15,10 +15,10 @@
 #define NUM_NAMES 6
 
 const char *names[] = {
-    "Roy",
-    "Bruce",
     "Jack",
     "Trevor",
+    "Roy",
+    "Bruce",
     "Percy",
     "Ron"};
 

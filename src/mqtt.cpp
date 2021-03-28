@@ -6,7 +6,7 @@
 #include "mqtt.h"
 
 #define DEVICE_ID "esp-scale-"
-#define TOPIC "test/weights/%s/set"
+#define TOPIC "weights/%s/set"
 
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
@@ -74,6 +74,8 @@ void setupMqtt() {
   mqttClient.onPublish(onMqttPublish);
   mqttClient.setServer(SECRET_MQTT_HOST, SECRET_MQTT_PORT);
   mqttClient.setCredentials(SECRET_MQTT_USER, SECRET_MQTT_PASS);
+
+  connectToWifi();
 }
 
 void sendWeight(
