@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 
+#include "OneButton.h"
 #include "display.h"
 #include "scale.h"
 #include "mqtt.h"
@@ -26,18 +27,17 @@ Display display = Display(names, NUM_NAMES);
 Scale scale;
 
 Timer turnOff = Timer(TURN_OFF);
-Timer longPress = Timer(LONG_PRESS);
 Timer draw = Timer(DRAW_RATE);
-Timer debounce = Timer(DEBOUNCE);
 
-bool isButtonDown = false;
-bool isLongPress = false;
+OneButton controlButton(CONTROL_PIN, true);
 
 uint8 currentName = 0;
 float currentWeight = 0;
 int32 rssi;
 
-void controlButtonPress();
+void buttonClick();
+void buttonLongPress();
+
 void drawScreen();
 
 void setup()
@@ -47,11 +47,14 @@ void setup()
   setupMqtt();
 
   pinMode(CONTROL_PIN, INPUT_PULLUP);
+
+  controlButton.attachClick(buttonClick);
+  controlButton.attachLongPressStart(buttonLongPress);
 }
 
 void loop()
 {
-  controlButtonPress();
+  controlButton.tick();
 
   if (draw.elapsed())
   {
@@ -66,7 +69,8 @@ void loop()
   }
 }
 
-void drawScreen() {
+void drawScreen()
+{
   float reading = scale.getReading();
   if (abs(reading - currentWeight) > 20)
   {
@@ -82,38 +86,18 @@ void drawScreen() {
       rssi);
 }
 
-void controlButtonPress()
-{
-  if (!digitalRead(CONTROL_PIN))
-  {
-    if (!isButtonDown && debounce.elapsed())
-    {
-      debounce.reset();
-      longPress.reset();
-      isButtonDown = true;
-    }
+void buttonClick() {
+  turnOff.reset();
+  currentName = (currentName + 1) % NUM_NAMES;
+}
 
-    if (longPress.elapsed() && !isLongPress)
-    {
-      isLongPress = true;
-
-      sendWeight(
+void buttonLongPress() {
+  turnOff.reset();
+  if (getRSSI() > -999) {
+    sendWeight(
         names[currentName],
         currentWeight);
 
-      display.invert(50);
-    }
-
-    turnOff.reset();
-  }
-  else if (isButtonDown)
-  {
-    if (!isLongPress)
-    {
-      currentName = (currentName + 1) % NUM_NAMES;
-    }
-
-    isLongPress = false;
-    isButtonDown = false;
+    display.invert(50);
   }
 }
