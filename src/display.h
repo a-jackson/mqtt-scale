@@ -26,4 +26,5 @@ public:
   void turnOff();
   void invert(
     unsigned long delay_time);
+  void drawInitialise();
 };

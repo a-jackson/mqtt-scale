@@ -6,6 +6,7 @@
 #include "scale.h"
 #include "mqtt.h"
 #include "timer.h"
+#include "ota.h"
 
 #define CONTROL_PIN 14
 #define LONG_PRESS 500
@@ -43,17 +44,20 @@ void drawScreen();
 void setup()
 {
   Serial.begin(9600);
-  display.clear();
+  display.drawInitialise();
   setupMqtt();
 
   pinMode(CONTROL_PIN, INPUT_PULLUP);
 
   controlButton.attachClick(buttonClick);
   controlButton.attachLongPressStart(buttonLongPress);
+
+  setupOta();
 }
 
 void loop()
 {
+  handleOta();
   controlButton.tick();
 
   if (draw.elapsed())

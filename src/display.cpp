@@ -11,8 +11,8 @@
 #define SCREEN_ADDRESS 0x3C
 
 Display::Display(
-  const char **names,
-  int numNames)
+    const char **names,
+    int numNames)
 {
   this->names = names;
   this->numNames = numNames;
@@ -26,20 +26,32 @@ Display::Display(
   this->display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
 }
 
+void Display::drawInitialise()
+{
+  this->clear();
+  this->display.setTextSize(2);
+  this->display.setCursor(0, 0);
+  this->display.setTextColor(
+      SSD1306_WHITE);
+  this->display.print("Starting ...");
+  this->display.display();
+}
+
 void Display::draw(
-  uint8 selectedName,
-  float currentWeight,
-  int32 rssi)
+    uint8 selectedName,
+    float currentWeight,
+    int32 rssi)
 {
   this->clear();
 
   this->display.setTextSize(1);
   this->display.setCursor(0, 0);
 
-  for (int i=0;i<this->numNames;i++) {
+  for (int i = 0; i < this->numNames; i++)
+  {
     this->writeMenuItem(
-      this->names[i],
-      i == selectedName);
+        this->names[i],
+        i == selectedName);
   }
 
   this->display.setTextSize(2);
@@ -52,13 +64,13 @@ void Display::draw(
   this->display.print(F("g"));
 
   this->drawSignalStrength(
-    rssi);
+      rssi);
 
   this->display.display();
 }
 
 void Display::drawSignalStrength(
-  int32 rssi)
+    int32 rssi)
 {
   int bars;
   if (rssi > -55 && rssi < 0)
@@ -104,11 +116,13 @@ void Display::clear()
 
 void Display::turnOff()
 {
+  this->display.clearDisplay();
+  this->display.display();
   this->display.ssd1306_command(SSD1306_DISPLAYOFF);
 }
 
 void Display::invert(
-  unsigned long delay_time)
+    unsigned long delay_time)
 {
   this->display.invertDisplay(true);
   delay(delay_time);
@@ -116,8 +130,8 @@ void Display::invert(
 }
 
 void Display::writeMenuItem(
-  const char *value,
-  bool selected)
+    const char *value,
+    bool selected)
 {
   if (selected)
   {
