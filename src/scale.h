@@ -7,4 +7,5 @@ public:
     Scale();
 
     float getReading();
+    void zero();
 };

@@ -19,7 +19,7 @@
 const char *names[] = {
     "Jack",
     "Trevor",
-    "Roy",
+    "Walter",
     "Bruce",
     "Percy",
     "Ron"};
@@ -38,6 +38,7 @@ int32 rssi;
 
 void buttonClick();
 void buttonLongPress();
+void buttonDoubleClick();
 
 void drawScreen();
 
@@ -51,6 +52,7 @@ void setup()
 
   controlButton.attachClick(buttonClick);
   controlButton.attachLongPressStart(buttonLongPress);
+  controlButton.attachDoubleClick(buttonDoubleClick);
 
   setupOta();
 }
@@ -104,4 +106,8 @@ void buttonLongPress() {
 
     display.invert(50);
   }
+}
+
+void buttonDoubleClick() {
+  scale.zero();
 }

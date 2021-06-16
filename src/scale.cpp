@@ -17,3 +17,7 @@ Scale::Scale() {
 float Scale::getReading() {
     return this->scale.get_units(3);
 }
+
+void Scale::zero() {
+    this->scale.tare();
+}
